@@ -16,38 +16,53 @@ const parseInput = (rawInput: string) => {
   return rawInput.split("\n");
 };
 
-function extractDigits(line: string): string[] {
-  let parts: string[] = [];
-  for (let c of line) {
-    let n = Number(c);
+type NumberPos = {
+  pos: number;
+  value: string;
+};
+
+function extractDigits(line: string): NumberPos[] {
+  let numbers: NumberPos[] = new Array();
+  for (let i = 0; i < line.length; i++) {
+    let n = Number(line[i]);
     if (!Number.isNaN(n)) {
-      parts.push(c);
+      numbers.push({
+        pos: i,
+        value: line[i],
+      });
     }
   }
-  return parts;
+  return numbers;
 }
 
-function replaceWords(line: string): string {
-  for (let k in numberWords) {
-    var re = new RegExp(k, "g");
-    var l = k.length;
-    var replace = k[0] + numberWords[k as keyof typeof numberWords] + k[l - 1];
-    line = line.replace(re, replace);
+function extractWords(line: string): NumberPos[] {
+  let numbers: NumberPos[] = new Array();
+  for (let k of Object.keys(numberWords)) {
+    let re = new RegExp(k, "g");
+    const matches = line.matchAll(re);
+    for (const match of matches) {
+      numbers.push({
+        pos: <number>match.index,
+        value: numberWords[match[0] as keyof typeof numberWords],
+      });
+    }
   }
-  return line;
+  return numbers;
 }
 
-function concatFirstLast(parts: string[]): number {
-  const l: number = parts.length;
-  return Number(parts[0] + parts[l - 1]);
+function concatFirstLast(numbers: NumberPos[]): number {
+  let sortedNumbers = numbers.sort((a, b) => (a.pos < b.pos ? -1 : 1));
+  const l: number = sortedNumbers.length;
+  return Number(sortedNumbers[0].value + sortedNumbers[l - 1].value);
 }
 
 const part1 = (rawInput: string) => {
   const input = parseInput(rawInput);
+
   let total = 0;
   for (let line of input) {
-    let parts = extractDigits(line);
-    let s = concatFirstLast(parts);
+    let numbers = extractDigits(line);
+    let s = concatFirstLast(numbers);
     total += s;
   }
   return total;
@@ -57,9 +72,9 @@ const part2 = (rawInput: string) => {
   const input = parseInput(rawInput);
   let total = 0;
   for (let line of input) {
-    line = replaceWords(line);
-    let parts = extractDigits(line);
-    let s = concatFirstLast(parts);
+    let numbers = extractDigits(line);
+    numbers.push(...extractWords(line));
+    let s = concatFirstLast(numbers);
     total += s;
   }
   return total;
