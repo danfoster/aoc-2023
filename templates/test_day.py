@@ -3,7 +3,7 @@ from aoc2023.days.day${DAY} import Day${DAY} as Day
 DAY = "${DAY}"
 
 
-class TestDay01:
+class TestDay${DAY}:
     def test_part1_example(self) -> None:
         day = Day(f"day{DAY}_e1.txt")
         assert day.part1() == "142"
