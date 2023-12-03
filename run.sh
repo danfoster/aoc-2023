@@ -13,6 +13,5 @@ docker run \
     --rm \
     -it \
     -v "$(pwd)":/code \
-    -v "$(pwd)/.venv.docker":"/venv/" \
     $IMAGE \
     /entrypoint.sh $@
