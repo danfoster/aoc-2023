@@ -1,4 +1,4 @@
-FROM python:3.9
+FROM pypy:3.10
 
 ADD entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
