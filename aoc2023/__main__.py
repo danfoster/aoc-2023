@@ -1,11 +1,12 @@
+import argparse
 import importlib
 
-import click
 
-
-@click.command()
-@click.argument("day", type=int)
-def main(day: int) -> None:
+def main() -> None:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("day", type=int)
+    args = parser.parse_args()
+    day = args.day
     day_s = f"{day:02}"
     daymod = importlib.import_module(f".days.day{day_s}", "aoc2023")
     dayclass = getattr(daymod, f"Day{day_s}")

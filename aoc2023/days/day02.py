@@ -1,7 +1,5 @@
 import re
-from dataclasses import dataclass
-from pprint import pprint
-from typing import Dict, List
+from typing import Dict
 
 from ..utils.day import Day
 from ..utils.io import read_file
