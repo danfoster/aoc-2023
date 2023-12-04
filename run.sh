@@ -1,6 +1,6 @@
 #!/bin/bash
 
-IMAGE=danfoster/aoc-2023:1
+IMAGE=danfoster/aoc-2023:2
 
 docker image inspect $IMAGE >/dev/null 2>&1
 if [ $? -ne 0 ]
