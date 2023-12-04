@@ -40,16 +40,14 @@ class NumberPos:
 class Day01(Day):
     def __init__(self, input_filename: str = "day01.txt") -> None:
         self.data = self.parse_data(read_file(input_filename))
+        self.numbers: List[List[NumberPos]] = []
 
     @staticmethod
     def extract_digits(line: str) -> List[NumberPos]:
         numbers: List[NumberPos] = []
         for i, c in enumerate(line):
-            try:
-                int(c)
+            if c.isnumeric():
                 numbers.append(NumberPos(i, c))
-            except ValueError:
-                pass
 
         return numbers
 
@@ -71,24 +69,16 @@ class Day01(Day):
         total: int = 0
         for line in self.data:
             numbers = self.extract_digits(line)
+            self.numbers.append(numbers)
             s = self.concat_first_last(numbers)
             total += int(s)
         return str(total)
 
     def part2(self) -> str:
         total: int = 0
-        for line in self.data:
-            numbers = self.extract_digits(line)
+        for n, line in enumerate(self.data):
+            numbers = self.numbers[n]
             numbers += self.extract_words(line)
             s = self.concat_first_last(numbers)
             total += int(s)
         return str(total)
-
-
-def main() -> None:
-    day = Day01()
-    pprint(day.part1())
-
-
-if __name__ == "__main__":
-    main()
