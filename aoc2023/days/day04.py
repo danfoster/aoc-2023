@@ -9,13 +9,15 @@ class Card:
     winning_nums: List[str]
     nums: List[str]
     winning_count: int
+    count: int
 
     def __init__(self, line: str):
-        parts = line.split(": ")
+        parts = line.split(": ", maxsplit=1)
         winning, nums = parts[1].split(" | ")
         self.winning_nums = winning.split()
         self.nums = nums.split()
         # print(self.winning_nums, self.nums)
+        self.count = 1
 
     def calc_winning_value(self) -> None:
         self.winning_count = 0
@@ -47,4 +49,10 @@ class Day04(Day):
         return str(sum)
 
     def part2(self) -> str:
-        return ""
+        sum = 0
+        for k, card in enumerate(self.data):
+            for i in range(k + 1, k + card.winning_count + 1):
+                self.data[i].count += 1 * card.count
+            sum += card.count
+            # print(f"[{k+1}] {card.count} {card.winning_count}")
+        return str(sum)
