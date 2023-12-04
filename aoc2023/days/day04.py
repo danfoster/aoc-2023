@@ -1,4 +1,3 @@
-from math import factorial
 from typing import List
 
 from ..utils.day import Day
