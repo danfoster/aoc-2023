@@ -1,29 +1,9 @@
 from dataclasses import dataclass
 from functools import total_ordering
-from pprint import pprint
 from typing import Dict, List
 
 from ..utils.day import Day
 from ..utils.io import read_file
-
-# class Node:
-#     id: int
-#     target: int
-
-#     def __repr__(self) -> str:
-#         return f"[{self.id}]"
-
-#     def __init__(self, id: int):
-#         self.id = id
-#         self.target = id
-
-
-# class Nodes:
-#     def __init__(self):
-#         self.mappings = {}
-
-#     def add_mapping(self, source, dest):
-#         self.mapping[source] = dest
 
 
 @dataclass
