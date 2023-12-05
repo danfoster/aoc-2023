@@ -39,7 +39,7 @@ class NumberPos:
 
 class Day01(Day):
     def __init__(self, input_filename: str = "day01.txt") -> None:
-        self.data = self.parse_data(read_file(input_filename))
+        self.parse_data(read_file(input_filename))
         self.numbers: List[List[NumberPos]] = []
 
     @staticmethod
@@ -70,8 +70,11 @@ class Day01(Day):
         for line in self.data:
             numbers = self.extract_digits(line)
             self.numbers.append(numbers)
-            s = self.concat_first_last(numbers)
-            total += int(s)
+            try:
+                s = self.concat_first_last(numbers)
+                total += int(s)
+            except IndexError:
+                pass
         return str(total)
 
     def part2(self) -> str:

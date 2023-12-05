@@ -15,5 +15,5 @@ class TestDay03:
 
     def test(self) -> None:
         day = Day(f"day{DAY}.txt")
-        assert day.part1() == "55108"
-        assert day.part2() == "56324"
+        assert day.part1() == "546312"
+        assert day.part2() == "87449461"

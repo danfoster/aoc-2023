@@ -117,7 +117,8 @@ class Schematic:
 
 class Day03(Day):
     def __init__(self, input_filename: str = "day03.txt") -> None:
-        self.schematic = Schematic(self.parse_data(read_file(input_filename)))
+        self.parse_data(read_file(input_filename))
+        self.schematic = Schematic(self.data)
 
     def part1(self) -> str:
         sum = 0

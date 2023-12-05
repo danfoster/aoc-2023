@@ -2,8 +2,8 @@ from typing import List
 
 
 class Day:
-    def parse_data(self, data: str) -> List[str]:
-        return data.rstrip().split("\n")
+    def parse_data(self, data: str) -> None:
+        self.data = data.rstrip().split("\n")
 
     def part1(self) -> str:
         raise NotImplementedError("Part1 Not implemented")

@@ -32,26 +32,27 @@ class Card:
 
 class Day04(Day):
     def __init__(self, input_filename: str = "day04.txt") -> None:
-        self.data = self.parse_cards(self.parse_data(read_file(input_filename)))
+        self.parse_data(read_file(input_filename))
+        self.cards = self.parse_cards()
 
-    def parse_cards(self, lines: List[str]) -> List[Card]:
+    def parse_cards(self) -> List[Card]:
         data: List[Card] = []
-        for line in lines:
+        for line in self.data:
             data.append(Card(line))
         return data
 
     def part1(self) -> str:
         sum = 0
-        for card in self.data:
+        for card in self.cards:
             card.calc_winning_value()
             sum += card.get_score()
         return str(sum)
 
     def part2(self) -> str:
         sum = 0
-        for k, card in enumerate(self.data):
+        for k, card in enumerate(self.cards):
             for i in range(k + 1, k + card.winning_count + 1):
-                self.data[i].count += 1 * card.count
+                self.cards[i].count += 1 * card.count
             sum += card.count
             # print(f"[{k+1}] {card.count} {card.winning_count}")
         return str(sum)
