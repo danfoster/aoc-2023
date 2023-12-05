@@ -10,7 +10,7 @@ class TestDay05:
 
     def test_part2_example(self) -> None:
         day = Day(f"day{DAY}_e2.txt")
-        assert day.part2() == ""
+        assert day.part2() == "46"
 
     def test(self) -> None:
         day = Day(f"day{DAY}.txt")
