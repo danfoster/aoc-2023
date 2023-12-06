@@ -1,11 +1,8 @@
+import os
 import re
 from dataclasses import dataclass
 from functools import total_ordering
-from pprint import pprint
 from typing import List
-
-from ..utils.day import Day
-from ..utils.io import read_file
 
 numberWords = {
     "one": "1",
@@ -37,10 +34,24 @@ class NumberPos:
         return self.pos < other.pos
 
 
-class Day01(Day):
+class Day01:
     def __init__(self, input_filename: str = "day01.txt") -> None:
-        self.parse_data(read_file(input_filename))
         self.numbers: List[List[NumberPos]] = []
+        self.parse_data(self.read_file(input_filename))
+
+    def parse_data(self, data: str) -> None:
+        self.data = data.rstrip().split("\n")
+
+    @staticmethod
+    def get_input_dir() -> str:
+        path = os.path.abspath(__file__)
+        path = f"{path}/../../../inputs/"
+        return os.path.abspath(path)
+
+    @classmethod
+    def read_file(cls, filename: str) -> str:
+        with open(os.path.join(cls.get_input_dir(), filename), "r") as file:
+            return file.read()
 
     @staticmethod
     def extract_digits(line: str) -> List[NumberPos]:
@@ -65,7 +76,7 @@ class Day01(Day):
         numbers.sort()
         return numbers[0].value + numbers[-1].value
 
-    def part1(self) -> str:
+    def part1(self) -> int:
         total: int = 0
         for line in self.data:
             numbers = self.extract_digits(line)
@@ -75,13 +86,13 @@ class Day01(Day):
                 total += int(s)
             except IndexError:
                 pass
-        return str(total)
+        return total
 
-    def part2(self) -> str:
+    def part2(self) -> int:
         total: int = 0
         for n, line in enumerate(self.data):
             numbers = self.numbers[n]
             numbers += self.extract_words(line)
             s = self.concat_first_last(numbers)
             total += int(s)
-        return str(total)
+        return total

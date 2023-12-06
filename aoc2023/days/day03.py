@@ -1,8 +1,6 @@
+import os
 from collections import defaultdict
 from typing import DefaultDict, List
-
-from ..utils.day import Day
-from ..utils.io import read_file
 
 
 class Number:
@@ -115,23 +113,37 @@ class Schematic:
         return nextto
 
 
-class Day03(Day):
+class Day03:
     def __init__(self, input_filename: str = "day03.txt") -> None:
-        self.parse_data(read_file(input_filename))
+        self.parse_data(self.read_file(input_filename))
         self.schematic = Schematic(self.data)
 
-    def part1(self) -> str:
+    def parse_data(self, data: str) -> None:
+        self.data = data.rstrip().split("\n")
+
+    @staticmethod
+    def get_input_dir() -> str:
+        path = os.path.abspath(__file__)
+        path = f"{path}/../../../inputs/"
+        return os.path.abspath(path)
+
+    @classmethod
+    def read_file(cls, filename: str) -> str:
+        with open(os.path.join(cls.get_input_dir(), filename), "r") as file:
+            return file.read()
+
+    def part1(self) -> int:
         sum = 0
         for number in self.schematic.numbers:
             valid = self.schematic.is_number_by_symbol(number)
             if valid:
                 sum += number.get()
-        return str(sum)
+        return sum
 
-    def part2(self) -> str:
+    def part2(self) -> int:
         sum = 0
         for row in self.schematic.symbols.values():
             for symbol in row:
                 if symbol.symbol == "*":
                     sum += symbol.get_ratio()
-        return str(sum)
+        return sum

@@ -1,15 +1,28 @@
-from ..utils.day import Day
-from ..utils.io import read_file
+import os
 
 
-
-class Day${DAY}(Day):
+class Day${DAY}:
     def __init__(self, input_filename: str = "day${DAY}.txt") -> None:
-        self.data = self.parse_data(read_file(input_filename))
+        self.parse_data(self.read_file(input_filename))
 
-    def part1(self) -> str:
-        return ""
+    @staticmethod
+    def get_input_dir() -> str:
+        path = os.path.abspath(__file__)
+        path = f"{path}/../../../inputs/"
+        return os.path.abspath(path)
 
-    def part2(self) -> str:
-        return ""
+    @classmethod
+    def read_file(cls, filename: str) -> str:
+        with open(os.path.join(cls.get_input_dir(), filename), "r") as file:
+            return file.read()
 
+    def parse_data(self, data: str) -> None:
+        self.data = data.rstrip().split("\n")
+
+    def part1(self) -> int:
+        ans: int = 0
+        return ans
+
+    def part2(self) -> int:
+        ans: int = 0
+        return ans

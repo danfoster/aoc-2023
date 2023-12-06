@@ -1,7 +1,5 @@
+import os
 from typing import List
-
-from ..utils.day import Day
-from ..utils.io import read_file
 
 
 class Card:
@@ -30,10 +28,24 @@ class Card:
         return 0
 
 
-class Day04(Day):
+class Day04:
     def __init__(self, input_filename: str = "day04.txt") -> None:
-        self.parse_data(read_file(input_filename))
+        self.parse_data(self.read_file(input_filename))
         self.cards = self.parse_cards()
+
+    def parse_data(self, data: str) -> None:
+        self.data = data.rstrip().split("\n")
+
+    @staticmethod
+    def get_input_dir() -> str:
+        path = os.path.abspath(__file__)
+        path = f"{path}/../../../inputs/"
+        return os.path.abspath(path)
+
+    @classmethod
+    def read_file(cls, filename: str) -> str:
+        with open(os.path.join(cls.get_input_dir(), filename), "r") as file:
+            return file.read()
 
     def parse_cards(self) -> List[Card]:
         data: List[Card] = []
@@ -41,18 +53,18 @@ class Day04(Day):
             data.append(Card(line))
         return data
 
-    def part1(self) -> str:
+    def part1(self) -> int:
         sum = 0
         for card in self.cards:
             card.calc_winning_value()
             sum += card.get_score()
-        return str(sum)
+        return sum
 
-    def part2(self) -> str:
+    def part2(self) -> int:
         sum = 0
         for k, card in enumerate(self.cards):
             for i in range(k + 1, k + card.winning_count + 1):
                 self.cards[i].count += 1 * card.count
             sum += card.count
             # print(f"[{k+1}] {card.count} {card.winning_count}")
-        return str(sum)
+        return sum

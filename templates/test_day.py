@@ -6,13 +6,14 @@ DAY = "${DAY}"
 class TestDay${DAY}:
     def test_part1_example(self) -> None:
         day = Day(f"day{DAY}_e1.txt")
-        assert day.part1() == "142"
+        assert day.part1() == None
+        
 
     def test_part2_example(self) -> None:
         day = Day(f"day{DAY}_e2.txt")
-        assert day.part2() == "281"
+        assert day.part2() == None
 
     def test(self) -> None:
         day = Day(f"day{DAY}.txt")
-        assert day.part1() == "55108"
-        assert day.part2() == "56324"
+        assert day.part1() == None
+        assert day.part2() == None

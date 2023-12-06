@@ -1,9 +1,7 @@
+import os
 from dataclasses import dataclass
 from functools import total_ordering
-from typing import Dict, List
-
-from ..utils.day import Day
-from ..utils.io import read_file
+from typing import Dict, List, Tuple
 
 
 @dataclass
@@ -43,14 +41,14 @@ class Mapping:
             f" ({self.diff})"
         )
 
-    def map(self, n: int) -> (int, bool):
+    def map(self, n: int) -> Tuple[int, bool]:
         if n >= self.source and n < self.source + self.size:
             # print(self)
             # print(f"** {self.diff}")
             return n + self.diff, True
         return n, False
 
-    def map_range(self, r: Range) -> (List[Range], List[Range]):
+    def map_range(self, r: Range) -> Tuple[List[Range], List[Range]]:
         unmapped_ranges: List[Range] = []
         mapped_ranges: List[Range] = []
 
@@ -69,13 +67,23 @@ class Mapping:
         return mapped_ranges, unmapped_ranges
 
 
-class Day05(Day):
+class Day05:
     def __init__(self, input_filename: str = "day05.txt") -> None:
-        self.parse_data(read_file(input_filename))
+        self.parse_data(self.read_file(input_filename))
+
+    @staticmethod
+    def get_input_dir() -> str:
+        path = os.path.abspath(__file__)
+        path = f"{path}/../../../inputs/"
+        return os.path.abspath(path)
+
+    @classmethod
+    def read_file(cls, filename: str) -> str:
+        with open(os.path.join(cls.get_input_dir(), filename), "r") as file:
+            return file.read()
 
     def parse_data(self, data: str) -> None:
-        super().parse_data(data)
-
+        self.data = data.rstrip().split("\n")
         self.seeds: List[int] = [int(x) for x in self.data[0][7:].split()]
         self.nodes: Dict[int, int] = {}
         self.mappings: List[List[Mapping]] = []
@@ -92,21 +100,18 @@ class Day05(Day):
         for n in range(size):
             self.nodes[source + n] = dest + n
 
-    def part1(self) -> str:
+    def part1(self) -> int:
         locations: List[int] = []
         for seed in self.seeds:
-            # print("-----
-            # ")
             for mappings in self.mappings:
-                # print(seed)
                 for mapping in mappings:
                     seed, done = mapping.map(seed)
                     if done:
                         break
             locations.append(seed)
-        return str(min(locations))
+        return min(locations)
 
-    def part2(self) -> str:
+    def part2(self) -> int:
         locations: List[int] = []
         for range in [
             Range(x, x + i) for (x, i) in zip(self.seeds[::2], self.seeds[1::2])
@@ -124,4 +129,4 @@ class Day05(Day):
                     unmapped_ranges = unmapped_ranges_t
                 unmapped_ranges = mapped_ranges + unmapped_ranges
             locations.append(min(unmapped_ranges).start)
-        return str(min(locations))
+        return min(locations)

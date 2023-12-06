@@ -1,8 +1,6 @@
+import os
 import re
 from typing import Dict
-
-from ..utils.day import Day
-from ..utils.io import read_file
 
 
 class Game:
@@ -32,23 +30,37 @@ class Game:
         return self.id
 
 
-class Day02(Day):
+class Day02:
     def __init__(self, input_filename: str = "day02.txt") -> None:
-        self.parse_data(read_file(input_filename))
+        self.parse_data(self.read_file(input_filename))
         self.games = []
         for line in self.data:
             self.games.append(Game(line))
 
-    def part1(self) -> str:
+    def parse_data(self, data: str) -> None:
+        self.data = data.rstrip().split("\n")
+
+    @staticmethod
+    def get_input_dir() -> str:
+        path = os.path.abspath(__file__)
+        path = f"{path}/../../../inputs/"
+        return os.path.abspath(path)
+
+    @classmethod
+    def read_file(cls, filename: str) -> str:
+        with open(os.path.join(cls.get_input_dir(), filename), "r") as file:
+            return file.read()
+
+    def part1(self) -> int:
         # 12 red cubes, 13 green cubes, and 14 blue cubes?
         conditions = {"red": 12, "green": 13, "blue": 14}
         sum = 0
         for game in self.games:
             sum += game.check_valid(conditions)
-        return str(sum)
+        return sum
 
-    def part2(self) -> str:
+    def part2(self) -> int:
         sum = 0
         for game in self.games:
             sum += game.get_max_seen_power()
-        return str(sum)
+        return sum
