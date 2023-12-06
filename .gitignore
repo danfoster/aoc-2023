@@ -1,5 +1,7 @@
 .env
-.venv
+.venv*
 .mypy_cache
 *.egg-info
 __pycache__
+*.c
+dist

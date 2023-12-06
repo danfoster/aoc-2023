@@ -1,4 +1,4 @@
-from aoc2023.days.day03 import Day03 as Day
+from day03 import Day03 as Day
 
 
 class TestDay03:

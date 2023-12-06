@@ -43,14 +43,8 @@ class Day01:
         self.data = data.rstrip().split("\n")
 
     @staticmethod
-    def get_input_dir() -> str:
-        path = os.path.abspath(__file__)
-        path = f"{path}/../../../inputs/"
-        return os.path.abspath(path)
-
-    @classmethod
-    def read_file(cls, filename: str) -> str:
-        with open(os.path.join(cls.get_input_dir(), filename), "r") as file:
+    def read_file(filename: str) -> str:
+        with open(os.path.join("inputs", filename), "r") as file:
             return file.read()
 
     @staticmethod
@@ -96,3 +90,9 @@ class Day01:
             s = self.concat_first_last(numbers)
             total += int(s)
         return total
+
+
+if __name__ == "__main__":
+    day = Day01()
+    print(day.part1())
+    print(day.part2())

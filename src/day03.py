@@ -122,14 +122,8 @@ class Day03:
         self.data = data.rstrip().split("\n")
 
     @staticmethod
-    def get_input_dir() -> str:
-        path = os.path.abspath(__file__)
-        path = f"{path}/../../../inputs/"
-        return os.path.abspath(path)
-
-    @classmethod
-    def read_file(cls, filename: str) -> str:
-        with open(os.path.join(cls.get_input_dir(), filename), "r") as file:
+    def read_file(filename: str) -> str:
+        with open(os.path.join("inputs", filename), "r") as file:
             return file.read()
 
     def part1(self) -> int:
