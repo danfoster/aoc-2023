@@ -124,3 +124,9 @@ class Day05:
                 unmapped_ranges = mapped_ranges + unmapped_ranges
             locations.append(min(unmapped_ranges).start)
         return min(locations)
+
+
+if __name__ == "__main__":
+    day = Day05()
+    print(day.part1())
+    print(day.part2())

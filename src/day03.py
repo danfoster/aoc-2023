@@ -141,3 +141,9 @@ class Day03:
                 if symbol.symbol == "*":
                     sum += symbol.get_ratio()
         return sum
+
+
+if __name__ == "__main__":
+    day = Day03()
+    print(day.part1())
+    print(day.part2())

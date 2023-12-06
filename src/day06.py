@@ -39,3 +39,9 @@ class Day06:
 
     def part2(self) -> int:
         return self.data_p2.number_way_to_win()
+
+
+if __name__ == "__main__":
+    day = Day06()
+    print(day.part1())
+    print(day.part2())

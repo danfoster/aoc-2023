@@ -58,3 +58,9 @@ class Day02:
         for game in self.games:
             sum += game.get_max_seen_power()
         return sum
+
+
+if __name__ == "__main__":
+    day = Day02()
+    print(day.part1())
+    print(day.part2())

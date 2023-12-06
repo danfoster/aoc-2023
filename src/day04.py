@@ -62,3 +62,9 @@ class Day04:
             sum += card.count
             # print(f"[{k+1}] {card.count} {card.winning_count}")
         return sum
+
+
+if __name__ == "__main__":
+    day = Day04()
+    print(day.part1())
+    print(day.part2())
