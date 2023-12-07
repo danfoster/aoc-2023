@@ -36,31 +36,49 @@ class Hand:
             return True
         return False
 
-    def calc_hand_as_score(self) -> None:
+    def calc_hand_as_score(self, joker: bool = False) -> None:
         score_hand = []
         for c in self.hand:
-            score_hand.append(self.card_to_strength(c))
+            score_hand.append(self.card_to_strength(c, joker))
         self.hand_as_score = score_hand
 
     @staticmethod
-    def card_to_strength(c: str) -> int:
-        mapping = {
-            "T": 10,
-            "J": 11,
-            "Q": 12,
-            "K": 13,
-            "A": 14,
-        }
+    def card_to_strength(c: str, joker: bool) -> int:
+        if joker:
+            mapping = {
+                "T": 10,
+                "J": 1,
+                "Q": 12,
+                "K": 13,
+                "A": 14,
+            }
+        else:
+            mapping = {
+                "T": 10,
+                "J": 11,
+                "Q": 12,
+                "K": 13,
+                "A": 14,
+            }
         if c.isdigit():
             return int(c)
         return mapping[c]
 
-    def calc_type(self) -> None:
+    def calc_type(self, joker: bool = False) -> None:
         counts: Dict[str, int] = defaultdict(lambda: 0)
+        jokers: int = 0
         for c in self.hand:
+            if joker and c == "J":
+                jokers += 1
+                continue
             counts[c] += 1
         key = list(counts.values())
         key.sort(reverse=True)
+        if joker:
+            if len(key) > 0:
+                key[0] += jokers
+            else:
+                key.append(jokers)
         if key == [5]:
             # Five of a kind
             self._type = 7
@@ -107,6 +125,12 @@ class Day07:
 
     def part2(self) -> int:
         ans: int = 0
+        for hand in self.data:
+            hand.calc_hand_as_score(joker=True)
+            hand.calc_type(joker=True)
+        self.data.sort()
+        for i, hand in enumerate(self.data):
+            ans += (i + 1) * hand.bid
         return ans
 
 
