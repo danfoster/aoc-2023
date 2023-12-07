@@ -23,3 +23,11 @@ new day:
 bench day:
     python3 -m cProfile -o output.prof src/bench.py {{day}} 
     snakeviz output.prof
+
+docker_i:
+    docker run -ti --rm \
+        -v $(pwd):/code \
+        -w /code \
+        -e NUITKA_CACHE_DIR=/code/.cache \
+        --user $(id -u):$(id -g) \
+        aoc2023 bash

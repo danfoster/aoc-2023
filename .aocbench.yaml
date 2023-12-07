@@ -5,9 +5,9 @@ author: DanF
 # Language used
 language: Python
 # Path to Dockerfile to build image
-# dockerfile: .docker/Dockerfile
+dockerfile: Dockerfile
 # Or image (this takes priority)
-image: python:3.12
+# image: python:3.12
 # Disable Hyperfine usage
 # hyperfine: False
 # Location where code directory should be mounted
@@ -15,15 +15,16 @@ code: /code
 # [*] What directory to run code from
 workdir: /code/
 # [*] When running image, command to run a given day.
-cmd: python3 src/day%zeroday%.py
+cmd: dist/day%zeroday%.dist/day%zeroday%.bin
 # [*] When running image, command to run once to build a given day if needed.
-# runonce: true
+runonce: ./build.sh %zeroday%
 # [*] Directories that need persisting across runs
 persistence:
  - /tmp
 # [*] Environment vars to set on container
 environment:
  - TIMED=1
+ - NUITKA_CACHE_DIR=/code/.cache
 # [*] Path to per-day code. (Directory or File - used to check if the day exists.)
 daypath: src/day%zeroday%.py
 # [*] Path to per-day input file.
