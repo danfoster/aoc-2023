@@ -1,4 +1,4 @@
-from aoc2023.days.day${DAY} import Day${DAY} as Day
+from day${DAY} import Day${DAY} as Day
 
 
 class TestDay${DAY}:

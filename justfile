@@ -17,6 +17,6 @@ test_p2 day:
 
 
 new day:
-    DAY={{day}} envsubst < templates/day.py > src/day{{Day}}.py
+    DAY={{day}} envsubst < templates/day.py > src/day{{day}}.py
     DAY={{day}} envsubst < templates/test_day.py > src/test_day{{day}}.py
 
