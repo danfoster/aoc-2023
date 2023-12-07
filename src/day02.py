@@ -1,27 +1,24 @@
 import os
-import re
-from typing import Dict
+from typing import Dict, List
 
 
 class Game:
     def __init__(self, line: str):
-        matches = re.match("Game ([0-9]+): (.*)", line)
-        assert matches is not None
-        self.id = int(matches.group(1))
+        parts = line.split(": ", maxsplit=1)
+        self.id = int(parts[0].split(maxsplit=1)[1])
         self.max_seen: Dict[str, int] = {}
 
-        for part in matches.group(2).split("; "):
+        for part in parts[1].split("; "):
             for color in part.split(", "):
-                count, c = color.split(" ")
-                count = int(count)
+                count_s, c = color.split(" ")
+                count = int(count_s)
                 if c not in self.max_seen or count > self.max_seen[c]:
                     self.max_seen[c] = count
 
     def get_max_seen_power(self) -> int:
         return self.max_seen["red"] * self.max_seen["green"] * self.max_seen["blue"]
 
-    def check_valid(self, conditions: Dict[str, int]) -> int:
-        ckeys = conditions.keys()
+    def check_valid(self, conditions: Dict[str, int], ckeys: List[str]) -> int:
         for color, value in self.max_seen.items():
             if color not in ckeys:
                 return 0
@@ -48,13 +45,14 @@ class Day02:
     def part1(self) -> int:
         # 12 red cubes, 13 green cubes, and 14 blue cubes?
         conditions = {"red": 12, "green": 13, "blue": 14}
+        ckeys: List[str] = list(conditions.keys())
         sum = 0
         for game in self.games:
-            sum += game.check_valid(conditions)
+            sum += game.check_valid(conditions, ckeys)
         return sum
 
     def part2(self) -> int:
-        sum = 0
+        sum: int = 0
         for game in self.games:
             sum += game.get_max_seen_power()
         return sum

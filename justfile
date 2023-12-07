@@ -20,3 +20,6 @@ new day:
     DAY={{day}} envsubst < templates/day.py > src/day{{day}}.py
     DAY={{day}} envsubst < templates/test_day.py > src/test_day{{day}}.py
 
+bench day:
+    python3 -m cProfile -o output.prof src/bench.py {{day}} 
+    snakeviz output.prof
