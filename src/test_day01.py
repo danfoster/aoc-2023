@@ -8,7 +8,6 @@ class TestDay01:
 
     def test_part2_example(self) -> None:
         day = Day("day01_e2.txt")
-        day.part1()
         assert day.part2() == 281
 
     def test(self) -> None:

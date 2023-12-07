@@ -1,42 +1,21 @@
 import os
-import re
-from dataclasses import dataclass
-from functools import total_ordering
 from typing import List
 
 numberWords = {
-    "one": "1",
-    "two": "2",
-    "three": "3",
-    "four": "4",
-    "five": "5",
-    "six": "6",
-    "seven": "7",
-    "eight": "8",
-    "nine": "9",
+    "one": "o1e",
+    "two": "t2o",
+    "three": "t3e",
+    "four": "f4r",
+    "five": "f5e",
+    "six": "s6x",
+    "seven": "s7n",
+    "eight": "e8t",
+    "nine": "n9e",
 }
-
-
-@dataclass
-@total_ordering
-class NumberPos:
-    pos: int
-    value: str
-
-    def __eq__(self, other: object) -> bool:
-        if not isinstance(other, NumberPos):
-            return NotImplemented
-        return self.pos == other.pos
-
-    def __lt__(self, other: object) -> bool:
-        if not isinstance(other, NumberPos):
-            return NotImplemented
-        return self.pos < other.pos
 
 
 class Day01:
     def __init__(self, input_filename: str = "day01.txt") -> None:
-        self.numbers: List[List[NumberPos]] = []
         self.parse_data(self.read_file(input_filename))
 
     def parse_data(self, data: str) -> None:
@@ -48,51 +27,43 @@ class Day01:
             return file.read()
 
     @staticmethod
-    def extract_digits(line: str) -> List[NumberPos]:
-        numbers: List[NumberPos] = []
+    def extract_digits(line: str) -> List[str]:
+        numbers: List[str] = []
         for i, c in enumerate(line):
             if c.isnumeric():
-                numbers.append(NumberPos(i, c))
-
+                numbers.append(c)
         return numbers
 
     @staticmethod
-    def extract_words(line: str) -> List[NumberPos]:
-        numbers: List[NumberPos] = []
+    def replace_words(line: str) -> str:
         for k in numberWords.keys():
-            matches = re.finditer(k, line)
-            for match in matches:
-                numbers.append(NumberPos(match.start(), numberWords[k]))
-        return numbers
+            line = line.replace(k, numberWords[k])
+        return line
 
     @staticmethod
-    def concat_first_last(numbers: List[NumberPos]) -> str:
-        numbers.sort()
-        return numbers[0].value + numbers[-1].value
+    def concat_first_last(numbers: List[str]) -> str:
+        return numbers[0] + numbers[-1]
 
     def part1(self) -> int:
         total: int = 0
         for line in self.data:
             numbers = self.extract_digits(line)
-            self.numbers.append(numbers)
-            try:
-                s = self.concat_first_last(numbers)
-                total += int(s)
-            except IndexError:
-                pass
+            s = self.concat_first_last(numbers)
+            total += int(s)
         return total
 
     def part2(self) -> int:
         total: int = 0
         for n, line in enumerate(self.data):
-            numbers = self.numbers[n]
-            numbers += self.extract_words(line)
+            line = self.replace_words(line)
+            numbers = self.extract_digits(line)
             s = self.concat_first_last(numbers)
             total += int(s)
         return total
 
 
 if __name__ == "__main__":
-    day = Day01()
-    print(day.part1())
-    print(day.part2())
+    for i in range(0, 1000):
+        day = Day01()
+        print(day.part1())
+        print(day.part2())
