@@ -14,7 +14,6 @@ numberWords = {
 }
 
 
-# foo
 class Day01:
     def __init__(self, input_filename: str = "day01.txt") -> None:
         self.parse_data(self.read_file(input_filename))

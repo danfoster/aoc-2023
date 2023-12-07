@@ -15,9 +15,10 @@ code: /code
 # [*] What directory to run code from
 workdir: /code/
 # [*] When running image, command to run a given day.
-cmd: dist/day%zeroday%.dist/day%zeroday%.bin
+# cmd: dist/day%zeroday%.dist/day%zeroday%.bin
+cmd: python src/day%zeroday%.py
 # [*] When running image, command to run once to build a given day if needed.
-runonce: ./build.sh %zeroday%
+# runonce: ./build.sh %zeroday%
 # [*] Directories that need persisting across runs
 persistence:
  - /tmp
