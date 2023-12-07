@@ -18,13 +18,12 @@ class Game:
     def get_max_seen_power(self) -> int:
         return self.max_seen["red"] * self.max_seen["green"] * self.max_seen["blue"]
 
-    def check_valid(self, conditions: Dict[str, int], ckeys: List[str]) -> int:
-        for color, value in self.max_seen.items():
-            if color not in ckeys:
-                return 0
-            if value > conditions[color]:
-                return 0
-        return self.id
+    def check_valid(self) -> bool:
+        return (
+            self.max_seen["red"] <= 12
+            and self.max_seen["green"] <= 13
+            and self.max_seen["blue"] <= 14
+        )
 
 
 class Day02:
@@ -44,11 +43,10 @@ class Day02:
 
     def part1(self) -> int:
         # 12 red cubes, 13 green cubes, and 14 blue cubes?
-        conditions = {"red": 12, "green": 13, "blue": 14}
-        ckeys: List[str] = list(conditions.keys())
         sum = 0
         for game in self.games:
-            sum += game.check_valid(conditions, ckeys)
+            if game.check_valid():
+                sum += game.id
         return sum
 
     def part2(self) -> int:
