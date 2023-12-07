@@ -63,7 +63,6 @@ class Day01:
 
 
 if __name__ == "__main__":
-    for i in range(0, 1000):
-        day = Day01()
-        print(day.part1())
-        print(day.part2())
+    day = Day01()
+    print(day.part1())
+    print(day.part2())
