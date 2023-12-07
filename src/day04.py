@@ -1,26 +1,23 @@
 import os
-from typing import List
+from typing import List, Set
 
 
 class Card:
-    winning_nums: List[str]
-    nums: List[str]
+    winning_nums: Set[str]
+    nums: Set[str]
     winning_count: int
     count: int
 
     def __init__(self, line: str):
         parts = line.split(": ", maxsplit=1)
         winning, nums = parts[1].split(" | ")
-        self.winning_nums = winning.split()
-        self.nums = nums.split()
+        self.winning_nums = set(winning.split())
+        self.nums = set(nums.split())
         # print(self.winning_nums, self.nums)
         self.count = 1
 
     def calc_winning_value(self) -> None:
-        self.winning_count = 0
-        for num in self.nums:
-            if num in self.winning_nums:
-                self.winning_count += 1
+        self.winning_count = len(self.winning_nums.intersection(self.nums))
 
     def get_score(self) -> int:
         if self.winning_count > 0:
