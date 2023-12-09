@@ -14,4 +14,4 @@ class TestDay09:
     def test(self) -> None:
         day = Day("day09.txt")
         assert day.part1() == 2105961943
-        assert day.part2() == None
+        assert day.part2() == 1019
