@@ -31,13 +31,17 @@ class Report:
                 break
             self.data.append(data)
 
-    def predict(self) -> int:
-        prev_tail: int = 0
+    def predict(self, front: bool = False) -> int:
+        prev: int = 0
         for i in reversed(self.data):
-            prev_tail += i[-1]
-            i.append(prev_tail)
+            if front:
+                prev = i[0] - prev
+                i.insert(0, prev)
+            else:
+                prev += i[-1]
+                i.append(prev)
 
-        return prev_tail
+        return prev
 
 
 class Day09:
@@ -65,7 +69,7 @@ class Day09:
     def part2(self) -> int:
         ans: int = 0
         for report in self.data:
-            ans += report.predict()
+            ans += report.predict(True)
         return ans
 
 
