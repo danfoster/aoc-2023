@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import math
 import os
 from typing import Dict, List
 
@@ -17,7 +18,7 @@ class Node:
         self.right = None
         self.label = label
         self.walked = False
-        self.end = label == "ZZZ"
+        self.end = label[2] == "Z"
         self.steps_seen = []
 
     def __repr__(self) -> str:
@@ -27,8 +28,57 @@ class Node:
 class Ghost:
     node: Node
 
-    def __init__(self, starting_node: Node):
+    def __init__(self, starting_node: Node, directions: str):
         self.node = starting_node
+        self.directions = directions
+        self.directions_l = len(self.directions)
+
+    def walk(self) -> int:
+        steps = 0
+        while True:
+            assert steps < 100000
+
+            if self.node.end:
+                return steps
+
+            if self.get_direction(steps):
+                assert self.node.right is not None
+                self.node = self.node.right
+            else:
+                assert self.node.left is not None
+                self.node = self.node.left
+            steps += 1
+
+    def get_direction(self, step: int) -> bool:
+        """
+        False -> Left
+        True -> Right
+        """
+        c = self.directions[step % self.directions_l]
+        return c == "R"
+
+    def print_mermaid(self) -> None:
+        start_label: str = self.node.label
+        steps: int = 0
+        print(f"subgraph {start_label}")
+        while True:
+            assert steps < 100
+            if self.get_direction(steps):
+                assert self.node.right is not None
+                print(f"    {self.node.label} -->|R| {self.node.right.label}")
+                self.node = self.node.right
+            else:
+                assert self.node.left is not None
+                print(f"    {self.node.label} -->|L| {self.node.left.label}")
+                self.node = self.node.left
+            steps += 1
+
+            if self.node.label == start_label:
+                break
+            if self.node.end and self.node.walked:
+                break
+            self.node.walked = True
+        print("end")
 
 
 class Day08:
@@ -60,7 +110,7 @@ class Day08:
             node.right = self.get_or_create_node(label_r)
 
             if label[2] == "A":
-                self.ghosts.append(Ghost(node))
+                self.ghosts.append(Ghost(node, self.directions))
 
     def get_or_create_node(self, label: str) -> Node:
         if label not in self.nodes:
@@ -87,46 +137,20 @@ class Day08:
         for node in self.nodes.values():
             node.walked = False
 
-    def get_direction(self, step: int) -> bool:
-        """
-        False -> Left
-        True -> Right
-        """
-        c = self.directions[step % len(self.directions)]
-        return c == "R"
-
-    def walk(self, ghosts: List[Ghost]) -> int:
-        steps = 0
-        while True:
-            assert steps < 100000
-            for i, ghost in enumerate(ghosts):
-                if ghost.node.end and len(ghosts) <= 1:
-                    print("END")
-                    return steps
-
-                if steps in ghost.node.steps_seen:
-                    print("Ghost popped")
-                    ghosts.pop(i)
-                    continue
-
-                ghost.node.steps_seen.append(i)
-
-                if self.get_direction(steps):
-                    assert ghost.node.right is not None
-                    ghost.node = ghost.node.right
-                else:
-                    assert ghost.node.left is not None
-                    ghost.node = ghost.node.left
-                steps += 1
-
     def part1(self) -> int:
         # self.print_mermaid("AAA")
-        ans = self.walk(ghosts=[Ghost(self.get_or_create_node("AAA"))])
-        return ans
+        return Ghost(self.get_or_create_node("AAA"), self.directions).walk()
 
     def part2(self) -> int:
-        ans = self.walk(ghosts=self.ghosts)
-        return ans
+        distances: List[int] = []
+        # print("graph TD")
+        for ghost in self.ghosts:
+            # ghost.print_mermaid()
+            # self.reset_walked()
+            distances.append(ghost.walk())
+
+        # print(distances)
+        return math.lcm(*distances)
 
 
 if __name__ == "__main__":
