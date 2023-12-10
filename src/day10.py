@@ -106,15 +106,6 @@ class Day10:
         assert pipe is not None
         return pipe
 
-    def find_starting_pipe(self) -> (int, int, int):
-        for d, coord in VECTORS.items():
-            x = self.start_x + coord[0]
-            y = self.start_y + coord[1]
-            pipe = self.data[y][x]
-            if pipe:
-                if pipe.is_joining(d):
-                    return (x, y, d)
-
     def infer_starting_pipe(self) -> None:
         dirs: List[int] = []
         for d, coord in VECTORS.items():
@@ -151,14 +142,11 @@ class Day10:
     def part2(self) -> int:
         ans: int = 0
         entrance_shape: int = 0
-        print()
-        self.print_pipes()
+        # self.print_pipes()
         for row in self.data:
             inside = False
-            pipes = iter(row)
-            for pipe in pipes:
+            for pipe in row:
                 if pipe and pipe.inloop:
-                    print(pipe, end="")
                     shape = pipe.shape()
                     if shape == 2:
                         inside = not inside
@@ -166,29 +154,20 @@ class Day10:
                         continue
                     elif entrance_shape == 0:
                         entrance_shape = shape
-                    elif entrance_shape == 1 and shape == 11:
-                        inside = not inside
-                        entrance_shape = 0
-                    elif entrance_shape == 11 and shape == 1:
-                        inside = not inside
-                        entrance_shape = 0
-                    elif entrance_shape == 6 and shape == 3:
-                        inside = not inside
-                        entrance_shape = 0
-                    elif entrance_shape == 3 and shape == 6:
-                        inside = not inside
-                        entrance_shape = 0
                     else:
+                        if (
+                            (entrance_shape == 1 and shape == 11)
+                            or (entrance_shape == 11 and shape == 1)
+                            or (entrance_shape == 6 and shape == 3)
+                            or (entrance_shape == 3 and shape == 6)
+                        ):
+                            inside = not inside
                         entrance_shape = 0
                 else:
                     entrance_shape = 0
                     if inside:
                         ans += 1
-                        print("I", end="")
-                    else:
-                        print("O", end="")
 
-            print("")
         return ans
 
 
