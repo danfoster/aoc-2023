@@ -54,10 +54,9 @@ class Day04:
     def part2(self) -> int:
         sum = 0
         for k, card in enumerate(self.cards):
-            for i in range(k + 1, k + card.winning_count + 1):
-                self.cards[i].count += 1 * card.count
+            for card2 in self.cards[k + 1 : k + card.winning_count + 1]:
+                card2.count += card.count
             sum += card.count
-            # print(f"[{k+1}] {card.count} {card.winning_count}")
         return sum
 
 
