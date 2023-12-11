@@ -15,6 +15,7 @@ class Card:
         self.nums = set(nums.split())
         # print(self.winning_nums, self.nums)
         self.count = 1
+        self.calc_winning_value()
 
     def calc_winning_value(self) -> None:
         self.winning_count = len(self.winning_nums.intersection(self.nums))
@@ -28,36 +29,23 @@ class Card:
 class Day04:
     def __init__(self, input_filename: str = "day04.txt") -> None:
         self.parse_data(self.read_file(input_filename))
-        self.cards = self.parse_cards()
 
     def parse_data(self, data: str) -> None:
-        self.data = data.rstrip().split("\n")
+        self.data: List[Card] = [Card(line) for line in data.rstrip().split("\n")]
 
     @staticmethod
     def read_file(filename: str) -> str:
         with open(os.path.join("inputs", filename), "r") as file:
             return file.read()
 
-    def parse_cards(self) -> List[Card]:
-        data: List[Card] = []
-        for line in self.data:
-            data.append(Card(line))
-        return data
-
     def part1(self) -> int:
-        sum = 0
-        for card in self.cards:
-            card.calc_winning_value()
-            sum += card.get_score()
-        return sum
+        return sum([x.get_score() for x in self.data])
 
     def part2(self) -> int:
-        sum = 0
-        for k, card in enumerate(self.cards):
-            for card2 in self.cards[k + 1 : k + card.winning_count + 1]:
+        for k, card in enumerate(self.data):
+            for card2 in self.data[k + 1 : k + card.winning_count + 1]:
                 card2.count += card.count
-            sum += card.count
-        return sum
+        return sum([x.count for x in self.data])
 
 
 if __name__ == "__main__":
