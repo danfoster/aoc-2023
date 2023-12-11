@@ -6,18 +6,12 @@ class Card:
     winning_nums: Set[str]
     nums: Set[str]
     winning_count: int
-    count: int
 
     def __init__(self, line: str):
         parts = line.split(": ", maxsplit=1)
         winning, nums = parts[1].split(" | ")
         self.winning_nums = set(winning.split())
         self.nums = set(nums.split())
-        # print(self.winning_nums, self.nums)
-        self.count = 1
-        self.calc_winning_value()
-
-    def calc_winning_value(self) -> None:
         self.winning_count = len(self.winning_nums.intersection(self.nums))
 
     def get_score(self) -> int:
@@ -42,10 +36,11 @@ class Day04:
         return sum([x.get_score() for x in self.data])
 
     def part2(self) -> int:
+        counts = [1] * len(self.data)
         for k, card in enumerate(self.data):
-            for card2 in self.data[k + 1 : k + card.winning_count + 1]:
-                card2.count += card.count
-        return sum([x.count for x in self.data])
+            for i in range(k + 1, k + card.winning_count + 1):
+                counts[i] += counts[k]
+        return sum(counts)
 
 
 if __name__ == "__main__":
