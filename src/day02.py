@@ -18,23 +18,22 @@ class Game:
     def get_max_seen_power(self) -> int:
         return self.max_seen["red"] * self.max_seen["green"] * self.max_seen["blue"]
 
-    def check_valid(self) -> bool:
-        return (
+    def check_valid(self) -> int:
+        if (
             self.max_seen["red"] <= 12
             and self.max_seen["green"] <= 13
             and self.max_seen["blue"] <= 14
-        )
+        ):
+            return self.id
+        return 0
 
 
 class Day02:
     def __init__(self, input_filename: str = "day02.txt") -> None:
         self.parse_data(self.read_file(input_filename))
-        self.games = []
-        for line in self.data:
-            self.games.append(Game(line))
 
     def parse_data(self, data: str) -> None:
-        self.data = data.rstrip().split("\n")
+        self.games = [Game(line) for line in data.rstrip().split("\n")]
 
     @staticmethod
     def read_file(filename: str) -> str:
@@ -42,18 +41,10 @@ class Day02:
             return file.read()
 
     def part1(self) -> int:
-        # 12 red cubes, 13 green cubes, and 14 blue cubes?
-        sum = 0
-        for game in self.games:
-            if game.check_valid():
-                sum += game.id
-        return sum
+        return sum([x.check_valid() for x in self.games])
 
     def part2(self) -> int:
-        sum: int = 0
-        for game in self.games:
-            sum += game.get_max_seen_power()
-        return sum
+        return sum([x.get_max_seen_power() for x in self.games])
 
 
 if __name__ == "__main__":
