@@ -7,7 +7,7 @@ language: Python
 # Path to Dockerfile to build image
 # dockerfile: Dockerfile
 # Or image (this takes priority)
-image: python:3.12-alpine
+image: python:3.12
 # Disable Hyperfine usage
 # hyperfine: False
 # Location where code directory should be mounted
