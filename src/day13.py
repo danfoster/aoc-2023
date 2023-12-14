@@ -39,43 +39,49 @@ class Grid:
         return ans
 
     @cache
-    def is_reflected_row(self, index: int) -> bool:
+    def is_reflected_row(self, index: int, smudge: bool = False) -> bool:
         idx1 = index
         idx2 = index + 1
-        while True:
-            if idx2 >= self.height or idx1 < 0:
-                return True
-            if self.get_row(idx1) != self.get_row(idx2):
-                return False
+        count: int = 0
+        while idx2 < self.height and idx1 >= 0:
+            count += (self.get_row(idx1) ^ self.get_row(idx2)).bit_count()
             idx1 -= 1
             idx2 += 1
+
+        if smudge:
+            return count == 1
+        return count == 0
 
     @cache
-    def is_reflected_col(self, index: int) -> bool:
+    def is_reflected_col(self, index: int, smudge: bool = False) -> bool:
         idx1 = index
         idx2 = index + 1
-        while True:
-            if idx2 >= self.width or idx1 < 0:
-                return True
-            if self.get_col(idx1) != self.get_col(idx2):
-                return False
+        count: int = 0
+        while idx2 < self.width and idx1 >= 0:
+            count += (self.get_col(idx1) ^ self.get_col(idx2)).bit_count()
             idx1 -= 1
             idx2 += 1
 
-    def find_reflected_row(self) -> int:
+        if smudge:
+            return count == 1
+        return count == 0
+
+    def find_reflected_row(self, smudge: bool = False) -> int:
         for y in range(self.height - 1):
-            if self.is_reflected_row(y):
+            if self.is_reflected_row(y, smudge=smudge):
                 return y + 1
         return 0
 
-    def find_reflected_col(self) -> int:
+    def find_reflected_col(self, smudge: bool = False) -> int:
         for x in range(self.width - 1):
-            if self.is_reflected_col(x):
+            if self.is_reflected_col(x, smudge=smudge):
                 return x + 1
         return 0
 
-    def summarize(self) -> int:
-        return (self.find_reflected_row() * 100) + self.find_reflected_col()
+    def summarize(self, smudge: bool = False) -> int:
+        return (self.find_reflected_row(smudge=smudge) * 100) + self.find_reflected_col(
+            smudge=smudge
+        )
 
 
 class Day13:
@@ -106,8 +112,7 @@ class Day13:
         return sum([grid.summarize() for grid in self.grids])
 
     def part2(self) -> int:
-        ans: int = 0
-        return ans
+        return sum([grid.summarize(smudge=True) for grid in self.grids])
 
 
 if __name__ == "__main__":
