@@ -93,6 +93,9 @@ class Day16:
 
     def parse_data(self, data: str) -> None:
         self.data = data.rstrip().split("\n")
+        self.reset()
+
+    def reset(self) -> None:
         self.energized = [
             [[] for i in range(len(self.data[0]))] for i in range(len(self.data))
         ]
@@ -113,15 +116,40 @@ class Day16:
 
     def part1(self) -> int:
         beam = Beam(0, 0, 1, self)
-        self.print_map()
         beam.shoot()
 
-        print()
-        self.print_energized()
         return self.count_energized()
 
     def part2(self) -> int:
         ans: int = 0
+        for x in range(self.map_width):
+            beam = Beam(x, 0, 2, self)
+            beam.shoot()
+            c = self.count_energized()
+            if c > ans:
+                ans = c
+            self.reset()
+
+            beam = Beam(x, self.map_height - 1, 0, self)
+            beam.shoot()
+            c = self.count_energized()
+            if c > ans:
+                ans = c
+            self.reset()
+        for y in range(self.map_height):
+            beam = Beam(0, y, 1, self)
+            beam.shoot()
+            c = self.count_energized()
+            if c > ans:
+                ans = c
+            self.reset()
+
+            beam = Beam(self.map_width - 1, y, 3, self)
+            beam.shoot()
+            c = self.count_energized()
+            if c > ans:
+                ans = c
+            self.reset()
         return ans
 
 
