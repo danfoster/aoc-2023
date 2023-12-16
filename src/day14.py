@@ -60,7 +60,7 @@ class Day14:
 
     def score_north(self) -> int:
         ans: int = 0
-        l = len(self.grid)
+        l: int = len(self.grid)
         for i, line in enumerate(self.grid):
             for c in line:
                 if c == 79:
@@ -106,6 +106,8 @@ class Day14:
         start_idx = seen_ids.index(_id)
         diff = count - start_idx
         after = ((1000000000 - start_idx) % diff) - 1
+        if after < 0:
+            after = diff - 1
         for _ in range(after):
             self.spin()
         return self.score_north()
