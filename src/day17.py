@@ -113,7 +113,7 @@ class Grid:
                 if p.speed >= self.maxspeed:
                     continue
                 neighbour.speed = p.speed + 1
-            elif self.minspeed and p.speed < self.minspeed:
+            elif self.minspeed and p.speed < self.minspeed and (p.x, p.y) != (0, 0):
                 continue
             yield neighbour
 
@@ -163,7 +163,7 @@ class Day17:
         start = GridPoint(0, 0, 1, 1)
         end = GridPoint(self.grid.width - 1, self.grid.height - 1, 1, 1)
         end = self.grid.a_star_search(start, end)
-        self.grid.draw_path(start, end)
+        # self.grid.draw_path(start, end)
         return self.grid.cost_so_far[end]
 
     def part2(self) -> int:
@@ -172,7 +172,7 @@ class Day17:
         self.grid.minspeed = 4
         self.grid.maxspeed = 10
         end = self.grid.a_star_search(start, end)
-        self.grid.draw_path(start, end)
+        # self.grid.draw_path(start, end)
         return self.grid.cost_so_far[end]
 
 
