@@ -167,7 +167,7 @@ class Day17:
         return self.grid.cost_so_far[end]
 
     def part2(self) -> int:
-        start = GridPoint(0, 0, 1, 1)
+        start = GridPoint(0, 0, 1, 0)
         end = GridPoint(self.grid.width - 1, self.grid.height - 1, 1, 1)
         self.grid.minspeed = 4
         self.grid.maxspeed = 10
