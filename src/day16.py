@@ -1,5 +1,4 @@
 import os
-from copy import deepcopy
 from functools import cached_property
 from typing import Dict, List
 
@@ -12,7 +11,7 @@ VECTORS: Dict[int, List[int]] = {0: [0, -1], 1: [1, 0], 2: [0, 1], 3: [-1, 0]}
 
 class Beam:
     x: int
-    x: int
+    y: int
     dir: int
 
     def __init__(self, x: int, y: int, dir: int, control: "Day16"):
