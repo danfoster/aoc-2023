@@ -60,10 +60,12 @@ class GridPoint:
 
 
 class Grid:
-    def __init__(self, input: List[str]):
+    def __init__(self, input: List[str], maxspeed: int = 3, minspeed: int = 0):
         self.grid = [[int(x) for x in line] for line in input]
         self.width = len(self.grid[0])
         self.height = len(self.grid)
+        self.maxspeed = maxspeed
+        self.minspeed = minspeed
 
     def draw_path(self, start: GridPoint, end: GridPoint) -> None:
         path = self.reconstruct_path(start, end)
@@ -98,7 +100,6 @@ class Grid:
             c = self.came_from[current]
             assert c is not None
             current = c
-        # path.reverse() # optional
         return path
 
     @staticmethod
@@ -112,18 +113,21 @@ class Grid:
             if (d + 2) % 4 == p.dir:
                 # Can't turn around
                 continue
-            neighbour = GridPoint(x, y, d, 0)
-            if neighbour.in_bounds(self.width, self.height):
-                if d == p.dir and p.speed >= 2:
+            neighbour = GridPoint(x, y, d, 1)
+            if not neighbour.in_bounds(self.width, self.height):
+                continue
+            if d == p.dir:
+                if p.speed >= self.maxspeed:
                     continue
-                if d == p.dir:
-                    neighbour.speed = p.speed + 1
-                yield neighbour
+                neighbour.speed = p.speed + 1
+            elif self.minspeed and p.speed < self.minspeed:
+                continue
+            yield neighbour
 
     def cost(self, a: GridPoint, b: GridPoint) -> int:
         return self.grid[b.y][b.x]
 
-    def a_star_search(self, start: GridPoint, goal: GridPoint) -> None:
+    def a_star_search(self, start: GridPoint, goal: GridPoint) -> GridPoint:
         openset = PriorityQueue[GridPoint]()
         openset.put(start, 0)
         self.came_from: dict[GridPoint, Optional[GridPoint]] = {}
@@ -133,9 +137,12 @@ class Grid:
 
         while not openset.empty():
             current: GridPoint = openset.get()
-
-            if current == goal:
-                break
+            if (
+                current.x == goal.x
+                and current.y == goal.y
+                and current.speed >= self.minspeed
+            ):
+                return current
 
             for next in self.neighbors(current):
                 new_cost = self.cost_so_far[current] + self.cost(current, next)
@@ -144,6 +151,7 @@ class Grid:
                     priority = new_cost + self.heuristic(next, goal)
                     openset.put(next, priority)
                     self.came_from[next] = current
+        raise Exception("Not possible")
 
 
 class Day17:
@@ -159,15 +167,20 @@ class Day17:
         self.grid = Grid(data.rstrip().split("\n"))
 
     def part1(self) -> int:
-        start = GridPoint(0, 0, 1, 0)
-        end = GridPoint(self.grid.width - 1, self.grid.height - 1, 1, 0)
-        self.grid.a_star_search(start, end)
-        # self.grid.draw_path(start, end)
+        start = GridPoint(0, 0, 1, 1)
+        end = GridPoint(self.grid.width - 1, self.grid.height - 1, 1, 1)
+        end = self.grid.a_star_search(start, end)
+        self.grid.draw_path(start, end)
         return self.grid.score(start, end)
 
     def part2(self) -> int:
-        ans: int = 0
-        return ans
+        start = GridPoint(0, 0, 1, 1)
+        end = GridPoint(self.grid.width - 1, self.grid.height - 1, 1, 1)
+        self.grid.minspeed = 4
+        self.grid.maxspeed = 10
+        end = self.grid.a_star_search(start, end)
+        self.grid.draw_path(start, end)
+        return self.grid.score(start, end)
 
 
 if __name__ == "__main__":
