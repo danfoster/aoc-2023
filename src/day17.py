@@ -160,7 +160,7 @@ class Day17:
         self.grid = Grid(data.rstrip().split("\n"))
 
     def part1(self) -> int:
-        start = GridPoint(0, 0, 1, 1)
+        start = GridPoint(0, 0, 1, 0)
         end = GridPoint(self.grid.width - 1, self.grid.height - 1, 1, 1)
         end = self.grid.a_star_search(start, end)
         # self.grid.draw_path(start, end)
