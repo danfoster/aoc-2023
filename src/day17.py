@@ -81,13 +81,6 @@ class Grid:
                     print(".", end="")
             print()
 
-    def score(self, start: GridPoint, end: GridPoint) -> int:
-        path = self.reconstruct_path(start, end)
-        ans: int = 0
-        for x, y in path:
-            ans += self.grid[y][x]
-        return ans
-
     def reconstruct_path(
         self, start: GridPoint, goal: GridPoint
     ) -> list[Tuple[int, int]]:
@@ -171,7 +164,7 @@ class Day17:
         end = GridPoint(self.grid.width - 1, self.grid.height - 1, 1, 1)
         end = self.grid.a_star_search(start, end)
         self.grid.draw_path(start, end)
-        return self.grid.score(start, end)
+        return self.grid.cost_so_far[end]
 
     def part2(self) -> int:
         start = GridPoint(0, 0, 1, 1)
@@ -180,7 +173,7 @@ class Day17:
         self.grid.maxspeed = 10
         end = self.grid.a_star_search(start, end)
         self.grid.draw_path(start, end)
-        return self.grid.score(start, end)
+        return self.grid.cost_so_far[end]
 
 
 if __name__ == "__main__":
