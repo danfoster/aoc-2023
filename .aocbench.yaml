@@ -5,9 +5,9 @@ author: DanF
 # Language used
 language: Python
 # Path to Dockerfile to build image
-dockerfile: Dockerfile
+# dockerfile: Dockerfile
 # Or image (this takes priority)
-# image: python:3.12
+image: python:3.12
 # Disable Hyperfine usage
 # hyperfine: False
 # Location where code directory should be mounted
