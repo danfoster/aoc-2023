@@ -74,6 +74,16 @@ class Instruction:
                 self.p1 = p2
                 self.p2 = p1
 
+    def update_from_color(self) -> None:
+        mapping = {
+            "0": "R",
+            "1": "D",
+            "2": "L",
+            "3": "U",
+        }
+        self.dir = mapping[self.color[5]]
+        self.length = int(self.color[:5], 16)
+
     def intersects(self, y: int) -> int:
         """Reports how we intersect a instruction
 
@@ -174,7 +184,6 @@ class Day18:
                         ans += instruction.length + 1
                     prev_x = x + 1
                     inside = not inside
-            # print(ans)
             totalans += ans
         return totalans
 
@@ -188,8 +197,12 @@ class Day18:
         return self.count_capacity(min_x, min_y, max_y)
 
     def part2(self) -> int:
-        ans: int = 0
-        return ans
+        for instruction in self.instructions:
+            instruction.update_from_color()
+        min_x, min_y, max_x, max_y = self.find_grid_size()
+        self.instructions.sort()
+        print(min_x, min_y, max_x, max_y)
+        return self.count_capacity(min_x, min_y, max_y)
 
 
 if __name__ == "__main__":
