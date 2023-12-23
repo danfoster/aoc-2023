@@ -8,9 +8,9 @@ class TestDay19:
 
     def test_part2_example(self) -> None:
         day = Day("day19_e1.txt")
-        assert day.part2() == 1
+        assert day.part2() == 167409079868000
 
     def test(self) -> None:
         day = Day("day19.txt")
-        assert day.part1() == 1
-        assert day.part2() == 1
+        assert day.part1() == 287054
+        assert day.part2() == 131619440296497
