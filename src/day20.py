@@ -1,6 +1,7 @@
 import os
 from dataclasses import dataclass
-from typing import Dict, List
+from math import lcm
+from typing import Dict, List, Tuple
 
 
 class Node:
@@ -24,6 +25,18 @@ class Node:
     def process(self, pulse: "Pulse") -> List["Pulse"]:
         raise NotImplementedError
 
+    def graph_key(self) -> str:
+        return self.label
+
+    def __repr__(self) -> str:
+        key = ""
+        if isinstance(self, FlipFlop):
+            key = "%"
+        elif isinstance(self, Conjunction):
+            key = "&"
+
+        return f"{key}{self.label}"
+
 
 class Broadcaster(Node):
     def process(self, pulse: "Pulse") -> List["Pulse"]:
@@ -33,10 +46,16 @@ class Broadcaster(Node):
             pulses.append(Pulse(self.label, child.label, pulse.high))
         return pulses
 
+    def graph_key(self) -> str:
+        return f"{self.label} [shape=point]"
+
 
 class NoOp(Node):
     def process(self, pulse: "Pulse") -> List["Pulse"]:
         return []
+
+    def graph_key(self) -> str:
+        return f"{self.label} [shape=point]"
 
 
 class FlipFlop(Node):
@@ -57,6 +76,9 @@ class FlipFlop(Node):
             pulses.append(Pulse(self.label, child.label, self.state))
         return pulses
 
+    def graph_key(self) -> str:
+        return f"{self.label} [shape=diamond]"
+
 
 class Conjunction(Node):
     states: Dict[str, bool]
@@ -65,16 +87,17 @@ class Conjunction(Node):
         super().__init__(label)
         self.states = {}
 
+    def output(self) -> bool:
+        for s in self.states.values():
+            if not s:
+                return True
+        return False
+
     def process(self, pulse: "Pulse") -> List["Pulse"]:
         pulses: List[Pulse] = []
         self.states[pulse.source] = pulse.high
 
-        state: bool = False
-        for s in self.states.values():
-            if not s:
-                state = True
-                break
-
+        state = self.output()
         for child in self.children:
             # print(f"{self.label} -{state}-> {child.label}")
             pulses.append(Pulse(self.label, child.label, state))
@@ -82,6 +105,12 @@ class Conjunction(Node):
 
     def parent_add_callback(self, parent: "Node") -> None:
         self.states[parent.label] = False
+
+    def graph_key(self) -> str:
+        shape = "box"
+        if len(self.states) == 1:
+            shape = "invtriangle"
+        return f"{self.label} [shape={shape}]"
 
 
 @dataclass
@@ -95,7 +124,8 @@ class Day20:
     nodes: Dict["str", Node]
 
     def __init__(self, input_filename: str = "day20.txt") -> None:
-        self.parse_data(self.read_file(input_filename))
+        self.rawdata = self.read_file(input_filename)
+        self.parse_data(self.rawdata)
 
     @staticmethod
     def read_file(filename: str) -> str:
@@ -123,16 +153,45 @@ class Day20:
                     self.nodes[child] = NoOp(child)
                 self.nodes[label].add_child(self.nodes[child])
 
-    def print_mermaid(self) -> None:
-        print(f"graph TD")
-        for key, value in self.nodes.items():
-            for child in value.children_labels():
-                print(f"  {key} --> {child}")
+    def draw_graph(self) -> None:
+        with open("graph.dot", "w") as f:
+            print("digraph G {", file=f)
+            for key, value in self.nodes.items():
+                nodelabel = self.nodes[key].graph_key()
+                print(f"  {nodelabel};", file=f)
+                for child in value.children_labels():
+                    print(f"  {key} -> {child};", file=f)
+            print("}", file=f)
+
+    def find_keys(self) -> List[Node]:
+        return self.nodes["broadcaster"].children
+
+    def get_flipflopchain(self, node: Node | None) -> List[bool]:
+        bitmask: List[bool] = []
+        while node:
+            newnode = None
+            bit = False
+            for child in node.children:
+                if isinstance(child, FlipFlop):
+                    newnode = child
+                elif isinstance(child, Conjunction):
+                    bit = True
+            node = newnode
+            bitmask.append(bit)
+        return bitmask
+
+    @staticmethod
+    def bitmasktoint(bitmask: List[bool]) -> int:
+        total: int = 0
+        for i, bit in enumerate(bitmask):
+            if bit:
+                total += 1 << i
+        return total
 
     def part1(self) -> int:
         lows: int = 0
         highs: int = 0
-        # self.print_mermaid()
+
         for i in range(0, 1000):
             pulsequeue: List[Pulse] = [Pulse("aptly", "broadcaster", False)]
             lows += 1
@@ -145,11 +204,16 @@ class Day20:
         return lows * highs
 
     def part2(self) -> int:
-        ans: int = 0
-        return ans
+        # self.draw_graph()
+        values: List[int] = []
+        for key in self.find_keys():
+            bitmask = self.get_flipflopchain(key)
+            values.append(self.bitmasktoint(bitmask))
+        return lcm(*values)
 
 
 if __name__ == "__main__":
     day = Day20()
     print(day.part1())
+    day.parse_data(day.rawdata)
     print(day.part2())
